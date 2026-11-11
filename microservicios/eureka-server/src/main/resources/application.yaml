@@ -1,0 +1,16 @@
+server:
+  port: ${SERVER_PORT:8761}
+
+spring:
+  application:
+    name: eureka-server
+
+eureka:
+  client:
+    # El servidor Eureka no se registra a si mismo ni consume el registro.
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    # Desactivado en laboratorio para que las instancias caidas desaparezcan rapido.
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 5000

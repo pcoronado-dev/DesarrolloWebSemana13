@@ -1,0 +1,1054 @@
+﻿{
+    "info":  {
+                 "_postman_id":  "1fcae02f-ee24-48c6-a936-ca54bec5e2da",
+                 "name":  "GLAB-S13 - API Gateway",
+                 "description":  "Coleccion de pruebas del laboratorio GLAB-S13. Todas las peticiones de negocio pasan por el API Gateway en http://localhost:8080, que resuelve los servicios mediante Eureka.",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+             },
+    "item":  [
+                 {
+                     "name":  "00 - Gateway",
+                     "item":  [
+                                  {
+                                      "name":  "Health del Gateway",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027Estado UP\u0027, () =\u003e pm.expect(body.status).to.eql(\u0027UP\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/actuator/health"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Rutas publicadas",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "const rutas = pm.response.json().map(r =\u003e r.route_id);",
+                                                                                    "pm.test(\u0027Publica cliente-service\u0027, () =\u003e pm.expect(rutas).to.include(\u0027cliente-service\u0027));",
+                                                                                    "pm.test(\u0027Publica pedido-service\u0027, () =\u003e pm.expect(rutas).to.include(\u0027pedido-service\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/actuator/gateway/routes"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Cliente por nombre logico",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/cliente-service/api/clientes"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Pedido por nombre logico",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/pedido-service/api/pedidos"
+                                                  }
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "01 - Categoria",
+                     "item":  [
+                                  {
+                                      "name":  "Crear categoria",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027categoriaId\u0027, body.id);",
+                                                                                    "pm.test(\u0027201 Created\u0027, () =\u003e pm.response.to.have.status(201));",
+                                                                                    "pm.test(\u0027Devuelve id y estado ACTIVO\u0027, () =\u003e {",
+                                                                                    "  pm.expect(body.id).to.be.a(\u0027number\u0027);",
+                                                                                    "  pm.expect(body.estado).to.eql(\u0027ACTIVO\u0027);",
+                                                                                    "});"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Tecnologia\",\n  \"estado\": \"ACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/categorias"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Listar categorias",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/categorias"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Devuelve un arreglo\u0027, () =\u003e pm.expect(pm.response.json()).to.be.an(\u0027array\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Obtener categoria por id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/categorias/{{categoriaId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Nombre no vacio\u0027, () =\u003e pm.expect(pm.response.json().nombre).to.not.be.empty);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Actualizar categoria",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Tecnologia y Computo\",\n  \"estado\": \"ACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/categorias/{{categoriaId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Nombre actualizado\u0027, () =\u003e pm.expect(pm.response.json().nombre).to.eql(\u0027Tecnologia y Computo\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Crear categoria temporal",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.collectionVariables.set(\u0027categoriaTemporalId\u0027, pm.response.json().id);",
+                                                                                    "pm.test(\u0027201 Created\u0027, () =\u003e pm.response.to.have.status(201));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Categoria temporal\",\n  \"estado\": \"INACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/categorias"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Eliminar categoria temporal",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/categorias/{{categoriaTemporalId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027204 No Content\u0027, () =\u003e pm.response.to.have.status(204));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "02 - Cliente",
+                     "item":  [
+                                  {
+                                      "name":  "Crear cliente",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027clienteId\u0027, body.id);",
+                                                                                    "pm.test(\u0027201 Created\u0027, () =\u003e pm.response.to.have.status(201));",
+                                                                                    "pm.test(\u0027DNI de 8 digitos\u0027, () =\u003e pm.expect(body.nroDni).to.match(/^\\d{8}$/));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Carlos\",\n  \"apellidos\": \"Ramirez Torres\",\n  \"direccion\": \"Av. Javier Prado 123, Lima\",\n  \"telefono\": \"987654321\",\n  \"nroDni\": \"12345678\",\n  \"estado\": \"ACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/clientes"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Listar clientes",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/clientes"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Devuelve un arreglo\u0027, () =\u003e pm.expect(pm.response.json()).to.be.an(\u0027array\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Obtener cliente por id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/clientes/{{clienteId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Nombre Carlos\u0027, () =\u003e pm.expect(pm.response.json().nombre).to.eql(\u0027Carlos\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Actualizar cliente",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellidos\": \"Ramirez Torres\",\n  \"direccion\": \"Av. Javier Prado 123, Lima\",\n  \"telefono\": \"987654321\",\n  \"nroDni\": \"12345678\",\n  \"estado\": \"ACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/clientes/{{clienteId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Nombre actualizado\u0027, () =\u003e pm.expect(pm.response.json().nombre).to.eql(\u0027Carlos Alberto\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error DNI con 7 digitos",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Pedro\",\n  \"apellidos\": \"Prueba\",\n  \"direccion\": \"Av. Siempre Viva 742\",\n  \"telefono\": \"999888777\",\n  \"nroDni\": \"1234567\",\n  \"estado\": \"ACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/clientes"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027400 Bad Request\u0027, () =\u003e pm.response.to.have.status(400));",
+                                                                                    "pm.test(\u0027Detalle nroDni\u0027, () =\u003e pm.expect(pm.response.json().errores.nroDni).to.exist);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error DNI duplicado",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Pedro\",\n  \"apellidos\": \"Prueba\",\n  \"direccion\": \"Av. Siempre Viva 742\",\n  \"telefono\": \"999888777\",\n  \"nroDni\": \"12345678\",\n  \"estado\": \"ACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/clientes"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027409 Conflict\u0027, () =\u003e pm.response.to.have.status(409));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Crear cliente temporal",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.collectionVariables.set(\u0027clienteTemporalId\u0027, pm.response.json().id);",
+                                                                                    "pm.test(\u0027201 Created\u0027, () =\u003e pm.response.to.have.status(201));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Cliente\",\n  \"apellidos\": \"Temporal\",\n  \"direccion\": \"Calle Temporal 1\",\n  \"telefono\": \"900000000\",\n  \"nroDni\": \"11112222\",\n  \"estado\": \"INACTIVO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/clientes"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Eliminar cliente temporal",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/clientes/{{clienteTemporalId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027204 No Content\u0027, () =\u003e pm.response.to.have.status(204));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "03 - Producto",
+                     "item":  [
+                                  {
+                                      "name":  "Crear producto",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027productoId\u0027, body.id);",
+                                                                                    "pm.test(\u0027201 Created\u0027, () =\u003e pm.response.to.have.status(201));",
+                                                                                    "pm.test(\u0027Categoria completada por Feign\u0027, () =\u003e pm.expect(body.categoria).to.not.be.null);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Laptop Lenovo ThinkPad\",\n  \"precio\": 3500.00,\n  \"stock\": 15,\n  \"categoriaId\": {{categoriaId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/productos"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Listar productos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/productos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Devuelve un arreglo\u0027, () =\u003e pm.expect(pm.response.json()).to.be.an(\u0027array\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Obtener producto por id",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/productos/{{productoId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Precio mayor a cero\u0027, () =\u003e pm.expect(pm.response.json().precio).to.be.above(0));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Actualizar producto",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Laptop Lenovo ThinkPad E14\",\n  \"precio\": 3650.00,\n  \"stock\": 12,\n  \"categoriaId\": {{categoriaId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/productos/{{productoId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Precio actualizado\u0027, () =\u003e pm.expect(pm.response.json().precio).to.eql(3650.0));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error precio cero",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Producto invalido\",\n  \"precio\": 0,\n  \"stock\": 1,\n  \"categoriaId\": {{categoriaId}}\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/productos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027400 Bad Request\u0027, () =\u003e pm.response.to.have.status(400));",
+                                                                                    "pm.test(\u0027Detalle precio\u0027, () =\u003e pm.expect(pm.response.json().errores.precio).to.exist);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error categoria inexistente",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"nombre\": \"Producto sin categoria\",\n  \"precio\": 100.00,\n  \"stock\": 1,\n  \"categoriaId\": 99999\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/productos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027404 Not Found\u0027, () =\u003e pm.response.to.have.status(404));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "04 - Pedido",
+                     "item":  [
+                                  {
+                                      "name":  "Crear pedido",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.collectionVariables.set(\u0027pedidoId\u0027, body.id);",
+                                                                                    "pm.test(\u0027201 Created\u0027, () =\u003e pm.response.to.have.status(201));",
+                                                                                    "pm.test(\u0027Estado inicial PENDIENTE\u0027, () =\u003e pm.expect(body.estado).to.eql(\u0027PENDIENTE\u0027));",
+                                                                                    "pm.test(\u0027Cliente completado por Feign\u0027, () =\u003e pm.expect(body.cliente.nombre).to.not.be.empty);",
+                                                                                    "pm.test(\u0027Producto completado por Feign\u0027, () =\u003e pm.expect(body.producto.nombre).to.not.be.empty);",
+                                                                                    "pm.test(\u0027Subtotal calculado\u0027, () =\u003e pm.expect(body.subtotal).to.be.above(0));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"clienteId\": {{clienteId}},\n  \"productoId\": {{productoId}},\n  \"cantidad\": 2\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/pedidos"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Obtener pedido enriquecido",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/pedidos/{{pedidoId}}"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Incluye datos del pedido\u0027, () =\u003e pm.expect(body.cantidad).to.eql(2));",
+                                                                                    "pm.test(\u0027Incluye datos del cliente\u0027, () =\u003e pm.expect(body.cliente.apellidos).to.not.be.empty);",
+                                                                                    "pm.test(\u0027Incluye datos del producto\u0027, () =\u003e pm.expect(body.producto.precio).to.be.above(0));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Listar pedidos",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/pedidos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Devuelve un arreglo\u0027, () =\u003e pm.expect(pm.response.json()).to.be.an(\u0027array\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Cambiar estado a ATENDIDO",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"estado\": \"ATENDIDO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/pedidos/{{pedidoId}}/estado"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Estado ATENDIDO\u0027, () =\u003e pm.expect(pm.response.json().estado).to.eql(\u0027ATENDIDO\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Anular pedido con DELETE",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Estado ANULADO, no se borro\u0027, () =\u003e pm.expect(pm.response.json().estado).to.eql(\u0027ANULADO\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/pedidos/{{pedidoId}}"
+                                                  }
+                                  },
+                                  {
+                                      "name":  "Error cantidad cero",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"clienteId\": {{clienteId}},\n  \"productoId\": {{productoId}},\n  \"cantidad\": 0\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/pedidos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027400 Bad Request\u0027, () =\u003e pm.response.to.have.status(400));",
+                                                                                    "pm.test(\u0027Detalle cantidad\u0027, () =\u003e pm.expect(pm.response.json().errores.cantidad).to.exist);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error cliente inexistente",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"clienteId\": 99999,\n  \"productoId\": {{productoId}},\n  \"cantidad\": 1\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/pedidos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027404 Not Found\u0027, () =\u003e pm.response.to.have.status(404));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error producto inexistente",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"clienteId\": {{clienteId}},\n  \"productoId\": 99999,\n  \"cantidad\": 1\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/pedidos"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027404 Not Found\u0027, () =\u003e pm.response.to.have.status(404));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  },
+                                  {
+                                      "name":  "Error transicion ANULADO a ATENDIDO",
+                                      "request":  {
+                                                      "method":  "PATCH",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"estado\": \"ATENDIDO\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/pedidos/{{pedidoId}}/estado"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "pm.test(\u0027400 Bad Request\u0027, () =\u003e pm.response.to.have.status(400));",
+                                                                                    "pm.test(\u0027Mensaje de transicion\u0027, () =\u003e pm.expect(pm.response.json().mensaje).to.include(\u0027Transicion\u0027));"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "05 - Eureka",
+                     "item":  [
+                                  {
+                                      "name":  "Servicios registrados",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Accept",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "url":  "{{baseUrlEureka}}/eureka/apps"
+                                                  },
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "const body = pm.response.json();",
+                                                                                    "pm.test(\u0027200 OK\u0027, () =\u003e pm.response.to.have.status(200));",
+                                                                                    "pm.test(\u0027Eureka devuelve applications\u0027, () =\u003e pm.expect(body.applications).to.exist);"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ]
+                                  }
+                              ]
+                 }
+             ],
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080"
+                     },
+                     {
+                         "key":  "baseUrlEureka",
+                         "value":  "http://localhost:8761"
+                     },
+                     {
+                         "key":  "categoriaId",
+                         "value":  "1"
+                     },
+                     {
+                         "key":  "clienteId",
+                         "value":  "1"
+                     },
+                     {
+                         "key":  "productoId",
+                         "value":  "1"
+                     },
+                     {
+                         "key":  "pedidoId",
+                         "value":  "1"
+                     },
+                     {
+                         "key":  "categoriaTemporalId",
+                         "value":  ""
+                     },
+                     {
+                         "key":  "clienteTemporalId",
+                         "value":  ""
+                     }
+                 ]
+}

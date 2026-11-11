@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: producto-service
+  profiles:
+    active: ${PROFILE_ACTIVE:dev}

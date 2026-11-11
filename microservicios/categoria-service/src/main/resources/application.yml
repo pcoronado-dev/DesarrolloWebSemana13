@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: categoria-service
+  profiles:
+    active: ${PROFILE_ACTIVE:dev}
